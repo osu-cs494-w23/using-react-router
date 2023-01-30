@@ -1,4 +1,5 @@
 import React from 'react'
+import { Routes, Route, Link, NavLink, useNavigate, useParams } from 'react-router-dom'
 
 import './App.css'
 
@@ -24,11 +25,27 @@ const menu = {
 }
 
 function Home() {
-    return <h1>Home</h1>
+    return (
+        <>
+            <h1>Home</h1>
+            <ul>
+                <li><Link to="/home">Home</Link></li>
+                <li><Link to="/about">About</Link></li>
+                <li><Link to="/people">People</Link></li>
+                <li><Link to="/menu">Menu</Link></li>
+            </ul>
+        </>
+    )
 }
 
 function About() {
-    return <h1>About</h1>
+    const navigate = useNavigate()
+    return (
+        <>
+            <h1>About</h1>
+            <button onClick={() => navigate("/home")}>Navigate home!</button>
+        </>
+    )
 }
 
 function People() {
@@ -36,12 +53,50 @@ function People() {
 }
 
 function Menu() {
-    return <h1>Menu</h1>
+    return (
+        <>
+            <h1>Menu</h1>
+            <ul>
+                <li><Link to="/menu/pizza">Pizza</Link></li>
+                <li><Link to="/menu/tacos">Tacos</Link></li>
+                <li><Link to="/menu/sushi">Sushi</Link></li>
+            </ul>
+        </>
+    )
+}
+
+function MenuItem() {
+    const { menuItem } = useParams()
+    const menuItemData = menu[menuItem]
+    return (
+        <>
+            <h1>Menu Item</h1>
+            <div>
+                <h2>{menuItemData.name} - ${menuItemData.price}</h2>
+                <img src={menuItemData.image} />
+                <p>{menuItemData.description}</p>
+            </div>
+        </>
+    )
 }
 
 function App() {
     return (
-        <Home />
+        <>
+            <ul>
+                <li><NavLink to="/home">Home</NavLink></li>
+                <li><NavLink to="/about">About</NavLink></li>
+                <li><NavLink to="/people">People</NavLink></li>
+                <li><NavLink to="/menu">Menu</NavLink></li>
+            </ul>
+            <Routes>
+                <Route path="/home" element={<Home />} />
+                <Route path="/about" element={<About />} />
+                <Route path="/people" element={<People />} />
+                <Route path="/menu" element={<Menu />} />
+                <Route path="/menu/:menuItem" element={<MenuItem />} />
+            </Routes>
+        </>
     )
 }
 
