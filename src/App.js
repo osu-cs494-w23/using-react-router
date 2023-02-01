@@ -1,5 +1,14 @@
 import React from 'react'
-import { Routes, Route, Link, NavLink, useNavigate, useParams } from 'react-router-dom'
+import {
+    Routes,
+    Route,
+    Link,
+    NavLink,
+    useNavigate,
+    useParams,
+    Outlet,
+    Navigate
+} from 'react-router-dom'
 
 import './App.css'
 
@@ -57,10 +66,11 @@ function Menu() {
         <>
             <h1>Menu</h1>
             <ul>
-                <li><Link to="/menu/pizza">Pizza</Link></li>
-                <li><Link to="/menu/tacos">Tacos</Link></li>
-                <li><Link to="/menu/sushi">Sushi</Link></li>
+                <li><Link to="pizza">Pizza</Link></li>
+                <li><Link to="tacos">Tacos</Link></li>
+                <li><Link to="sushi">Sushi</Link></li>
             </ul>
+            <Outlet />
         </>
     )
 }
@@ -68,7 +78,7 @@ function Menu() {
 function MenuItem() {
     const { menuItem } = useParams()
     const menuItemData = menu[menuItem]
-    return (
+    return menuItemData ? (
         <>
             <h1>Menu Item</h1>
             <div>
@@ -77,24 +87,36 @@ function MenuItem() {
                 <p>{menuItemData.description}</p>
             </div>
         </>
-    )
+    ) : <NotFound />
+}
+
+function Specials() {
+    return <h1>Specials</h1>
+}
+
+function NotFound() {
+    return <h1>Not Found</h1>
 }
 
 function App() {
     return (
         <>
             <ul>
-                <li><NavLink to="/home">Home</NavLink></li>
+                <li><NavLink to="/">Home</NavLink></li>
                 <li><NavLink to="/about">About</NavLink></li>
                 <li><NavLink to="/people">People</NavLink></li>
                 <li><NavLink to="/menu">Menu</NavLink></li>
             </ul>
             <Routes>
-                <Route path="/home" element={<Home />} />
+                <Route index element={<Home />} />
+                <Route path="/home" element={<Navigate to="/" />} />
                 <Route path="/about" element={<About />} />
                 <Route path="/people" element={<People />} />
-                <Route path="/menu" element={<Menu />} />
-                <Route path="/menu/:menuItem" element={<MenuItem />} />
+                <Route path="/menu" element={<Menu />}>
+                    <Route index element={<Specials />} />
+                    <Route path=":menuItem" element={<MenuItem />} />
+                </Route>
+                <Route path="*" element={<NotFound />} />
             </Routes>
         </>
     )
